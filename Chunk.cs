@@ -9,8 +9,8 @@ public class Chunk
     private Tile[,] tiles;
     public Chunk(int n, int m) 
     {
-        x = 10;  
-        y = 10;
+        x = God.ChunkMagnitude;
+        y = God.ChunkMagnitude;
         tiles = new Tile[x, y];
         ID = new Vector2(n , m); 
         for(int i = 0; i < x; i++) 

@@ -4,20 +4,31 @@ using UnityEngine;
 
 public class Matrix : MonoBehaviour {
 
-    public MapProperties propertiesOfMap;
-    public Chunk[,] Chunks;
+    public static Matrix matrix;
+    public static MapProperties propertiesOfMap;
+    public static Chunk[,] Chunks;
+    [SerializeField] private MapProperties map;
+    private Chunk[,] chunks;
+    
 
-    public Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
+    public static Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
+
+    private void Singleton()
+    {
+        if (matrix != null) { Destroy(gameObject); } else { matrix = this; }
+    }
     public void InitializeMe() 
     {
-        Chunks = new Chunk[propertiesOfMap.x, propertiesOfMap.y];
+        propertiesOfMap = map;
+        chunks = new Chunk[propertiesOfMap.x, propertiesOfMap.y];
         for (int i = 0; i < propertiesOfMap.x; i++)
         {
             for (int j = 0; j < propertiesOfMap.y; j++)
             {
-                Chunks[i, j] = new Chunk(i, j);
+                chunks[i, j] = new Chunk(i, j);
             }
         }
+        Chunks = chunks;
     }
     private void Start()
     {

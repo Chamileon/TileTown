@@ -5,9 +5,10 @@ using UnityEngine;
 public class God : MonoBehaviour
 {
     public static God god;
+    public static readonly int ChunkMagnitude = 10;
     private void OnEnable()
     {
-        god = this;
+        if (god == null) { god = this; } else { Destroy(gameObject); }    
     }
     public static God GetGod { get { return god; } }
     private static Matrix mapMatrix;
