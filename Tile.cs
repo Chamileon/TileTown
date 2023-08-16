@@ -4,18 +4,24 @@ using UnityEngine;
 
 
 
-public class Tile : MonoBehaviour
+public class Tile
 {
-    [SerializeField] private TileProperties properties;
-    [SerializeField] private Sprite sprite;
-
+    public Tile(int X, int Y, bool Walkable, bool Contructable, bool HaveEffect) { properties = new TileProperties(X, Y, Walkable, Contructable, HaveEffect);}
+    private TileProperties properties;
     public TileProperties Properties { get => properties; set => properties = value; }
-    public Sprite Sprite { get => sprite; set => sprite = value; }  
 }
 
-
-public  class TileProperties : MonoBehaviour
+[System.Serializable]
+public  class TileProperties
 {
-    [SerializeField] public int x, y;
-    [SerializeField] public int walkable, constructable,haveEffect;
+    public int x, y;
+    public bool walkable = false, constructable = false, haveEffect = false; 
+    public TileProperties(int X, int Y, bool Walkable, bool Contructable, bool HaveEffect) 
+    {
+        x = X;
+        y = Y;
+        walkable = Walkable;
+        constructable = Contructable;
+        haveEffect = HaveEffect;
+    }
 }
