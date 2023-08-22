@@ -8,7 +8,11 @@ using UnityEngine;
 public class MapProperties : ScriptableObject
 {
     [Header("Extention")]
-    public int x, y;
+    [SerializeField]private int x, y;
+    public int X { get { return x; } }
+    public int Y { get { return y; } }
+    public int ExtentionX { get { return x * 10; } }
+    public int ExtentionY { get { return y * 10; } }
     [Header("Details")]
     public new string name;
     [TextArea(3, 20)]

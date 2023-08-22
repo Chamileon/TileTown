@@ -4,29 +4,33 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    [SerializeField] [Range(0.1f, 1f)] private float seed;
+    [SerializeField] [Range(1f, 1000f)] private float scale;
+    
+    private float CalculateNoise(float x, float y) 
+    {
 
-    private void Start()
+        float noise = Mathf.PerlinNoise((x + seed)  / scale, (y + seed) / scale);
+        Debug.Log("Noise: " + noise);
+        
+        return noise;
+    }
+    private IEnumerator StartWorld()
     {
        
-        for(int n = 0; n < Matrix.propertiesOfMap.x; n++)
+        for(int n = 0; n < Matrix.propertiesOfMap.ExtentionX; n++)
         {
-            for(int m = 0; m < Matrix.propertiesOfMap.y; m++) 
+            yield return null;
+
+            for (int m = 0; m < Matrix.propertiesOfMap.ExtentionY; m++) 
             {
-                Chunk Chunkie = Matrix.GetChunkFromID(n, m);
-                
-                for (int i = 0; i < God.ChunkMagnitude; i++)
-                {
-                    for (int j = 0; j < God.ChunkMagnitude; j++)
-                    {
-                        Tile tile = Chunkie.GetTileByIndex(i, j);
-                        if (tile != null)
-                        {
-                            Instantiate(TileSet.tilePrefab, new Vector3((float)tile.Properties.x, (float)tile.Properties.y, 1), Quaternion.identity);
-                        }
-                    }
-                }
+                Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(0).GetTilePrefab(CalculateNoise(n,m)), new Vector3(n,m,0f),Quaternion.identity);
             }
            
         }
+    }
+    private void Start()
+    {
+        StartCoroutine(StartWorld());
     }
 }

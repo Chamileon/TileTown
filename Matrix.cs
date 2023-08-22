@@ -7,28 +7,45 @@ public class Matrix : MonoBehaviour {
     public static Matrix matrix;
     public static MapProperties propertiesOfMap;
     public static Chunk[,] Chunks;
-    [SerializeField] private MapProperties map;
+    [SerializeField] private MapProperties mapProperties;
     private Chunk[,] chunks;
+    public static Tile[,] tiles;
+
     
 
     public static Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
-
+    public static Tile GetTileFromID(int X, int Y,int x, int y) 
+    {
+        return GetChunkFromID(X, Y).GetTileByIndex(x, y);
+    }
+    
     private void Singleton()
     {
         if (matrix != null) { Destroy(gameObject); } else { matrix = this; }
     }
     public void InitializeMe() 
     {
-        propertiesOfMap = map;
-        chunks = new Chunk[propertiesOfMap.x, propertiesOfMap.y];
-        for (int i = 0; i < propertiesOfMap.x; i++)
+        propertiesOfMap = mapProperties;
+        chunks = new Chunk[propertiesOfMap.X, propertiesOfMap.Y];
+        tiles = new Tile[propertiesOfMap.ExtentionX,propertiesOfMap.ExtentionY];
+        for (int i = 0; i < propertiesOfMap.X; i++)
         {
-            for (int j = 0; j < propertiesOfMap.y; j++)
+            for (int j = 0; j < propertiesOfMap.Y; j++)
             {
                 chunks[i, j] = new Chunk(i, j);
+                for (int k = 0; k < chunks[i,j].X; k++) 
+                {
+                    for(int l = 0; l < chunks[i,j].Y; l++) 
+                    {
+                        tiles[(i * God.ChunkMagnitude) + k,(j * God.ChunkMagnitude) + l] = chunks[i,j].GetTileByIndex(k, l);
+                        Debug.Log(tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l].Properties.x + " X & " + 
+                            tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l].Properties.y + " Y ADDED TO TILES ");
+                    }
+                }
             }
         }
         Chunks = chunks;
+
     }
     private void Start()
     {
@@ -40,7 +57,7 @@ public class Matrix : MonoBehaviour {
         */
         foreach(Chunk Chunkie in Chunks) 
         {
-            Debug.Log("ID: " + Chunkie.GetID.x + ", " + Chunkie.GetID.y);
+            Debug.Log("ID: " + Chunkie.GetID().x + ", " + Chunkie.GetID().y);
             foreach (Tile tile in Chunkie.GetTilesFromChunk())
             {
                 Debug.Log("x = " + tile.Properties.x + " , y = " + tile.Properties.y);

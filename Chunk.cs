@@ -21,7 +21,7 @@ public class Chunk
             }
         }
     }
-    public Vector2 GetID { get { return ID; } }
+    public Vector2 GetID() { return ID; }
     public int X { get { return x; } }
     public int Y { get { return y; } }  
 
