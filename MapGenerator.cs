@@ -2,36 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] [Range(1, 100f)] private float seed;
-    [SerializeField] [Range(1f, 1000f)] private float scale;
-    [SerializeField] [Range(1f,10f)] private float fourthDimension;
-    [SerializeField] [Range(0.1f,1f)] private float fifthDimension;
-    [SerializeField] [Range(1f,2f)] private float SixthDimension;
+    public static MapGenerator mapGenerator;
+    [SerializeField] public static SeedProperties seed;
+    [SerializeField] private SeedProperties Pseed;
     [SerializeField] private bool reset;
     public delegate void theDelegate();
     public theDelegate InvokeMe;
     
-
     
     private float CalculateNoise(float x, float y) 
     {
 
-        float noise = Mathf.PerlinNoise((x + SixthDimension + (seed + fifthDimension)+ (seed * fourthDimension * fifthDimension))  / scale,
-            (y + SixthDimension + (seed + fifthDimension) + (seed * fourthDimension * fifthDimension)) / scale) ;
+        float noise = Mathf.PerlinNoise((x + seed.seed + (seed.seed + seed.dimension5)+ (seed.seed * seed.dimension4 * seed.dimension5))  / seed.scale,
+            (y + seed.dimension6 + (seed.seed + seed.dimension5) + (seed.seed * seed.dimension4 * seed.dimension5)) / seed.scale) ;
         
         return noise;
     }
     private IEnumerator StartWorld()
     {
-       
-        for(int n = 0; n < Matrix.propertiesOfMap.ExtentionX; n++)
+        seed = Pseed;
+        for(int n = 0; n < Matrix.map.ExtentionX; n++)
         {
             yield return null;
 
-            for (int m = 0; m < Matrix.propertiesOfMap.ExtentionY; m++) 
+            for (int m = 0; m < Matrix.map.ExtentionY; m++) 
             {
                 Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(0).GetTilePrefab(CalculateNoise(n,m)), new Vector3(n,m,0f),Quaternion.identity);
             }
@@ -48,6 +44,7 @@ public class MapGenerator : MonoBehaviour
 
         }
         StartCoroutine(StartWorld());
+        Matrix.SaveMap();
         reset = false;
     }
     private void Start()
@@ -55,7 +52,7 @@ public class MapGenerator : MonoBehaviour
         StartCoroutine(StartWorld());
         InvokeMe = new theDelegate(ResetWorld);   
     }
-    public void StartWorldCoroutine() { StartCoroutine(StartWorld()); }
+    public void StartWorldCoroutine() { StartCoroutine(StartWorld()); Matrix.SaveMap(); }
 
     private void Update()
     {

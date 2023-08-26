@@ -8,7 +8,7 @@ using UnityEngine;
 public class MapProperties : ScriptableObject
 {
     [Header("Extention")]
-    [SerializeField]private int x, y;
+    [SerializeField] private int x, y;
     public int X { get { return x; } }
     public int Y { get { return y; } }
     public int ExtentionX { get { return x * 10; } }
@@ -17,5 +17,9 @@ public class MapProperties : ScriptableObject
     public new string name;
     [TextArea(3, 20)]
     public string description;
+    [Header("Seed")]
+    [Range(1f, 100f)]
+    [SerializeField] public SeedProperties seed;
 
+    
 }
