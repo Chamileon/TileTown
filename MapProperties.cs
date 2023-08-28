@@ -18,7 +18,6 @@ public class MapProperties : ScriptableObject
     [TextArea(3, 20)]
     public string description;
     [Header("Seed")]
-    [Range(1f, 100f)]
     [SerializeField] public SeedProperties seed;
 
     

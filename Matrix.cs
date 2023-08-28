@@ -5,16 +5,18 @@ using UnityEngine;
 public class Matrix : MonoBehaviour {
 
     public static Matrix matrix;
-    public static MapProperties map;
     public static Chunk[,] Chunks;
     [SerializeField] private MapProperties mapProperties;
     private Chunk[,] chunks;
     public static Tile[,] tiles;
 
-    public static void SaveMap() 
+    public MapProperties MapProperties { get => mapProperties as MapProperties;private set { mapProperties = (MapProperties)value; } }
+    public  void SaveMap() 
     {
-        map.seed = MapGenerator.seed;
+        mapProperties.seed = MapGenerator.mapGenerator.Seed;
+        
     }
+    
     
     public static Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
     public static Tile GetTileFromID(int X, int Y,int x, int y) 
@@ -28,12 +30,12 @@ public class Matrix : MonoBehaviour {
     }
     public void InitializeMe() 
     {
-        map = mapProperties;
-        chunks = new Chunk[map.X, map.Y];
-        tiles = new Tile[map.ExtentionX,map.ExtentionY];
-        for (int i = 0; i < map.X; i++)
+        Singleton();
+        chunks = new Chunk[mapProperties.X, mapProperties.Y];
+        tiles = new Tile[mapProperties.ExtentionX,mapProperties.ExtentionY];
+        for (int i = 0; i < mapProperties.X; i++)
         {
-            for (int j = 0; j < map.Y; j++)
+            for (int j = 0; j < mapProperties.Y; j++)
             {
                 chunks[i, j] = new Chunk(i, j);
                 for (int k = 0; k < chunks[i,j].X; k++) 

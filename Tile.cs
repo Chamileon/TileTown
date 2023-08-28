@@ -18,7 +18,7 @@ public class Tile
 [System.Serializable]
 public  class TileProperties
 {
-    public int x, y, heigth;
+    public int x, y, level;
     public bool walkable = false, constructable = false, haveEffect = false; 
     public TileProperties(int X, int Y, bool Walkable, bool Contructable, bool HaveEffect, int Heigth = 0) 
     {
@@ -27,6 +27,6 @@ public  class TileProperties
         walkable = Walkable;
         constructable = Contructable;
         haveEffect = HaveEffect;
-        heigth = Heigth;
+        level = Heigth;
     }
 }

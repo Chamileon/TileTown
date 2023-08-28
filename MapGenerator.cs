@@ -1,20 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum MapGeneratorMode { None, Start, Restart, ResetAndLoad, Save }
 public class MapGenerator : MonoBehaviour
 {
     public static MapGenerator mapGenerator;
-    [SerializeField] public static SeedProperties seed;
-    [SerializeField] private SeedProperties Pseed;
-    [SerializeField] private bool reset;
-    public delegate void theDelegate();
-    public theDelegate InvokeMe;
-    
+    [SerializeField] private SeedProperties seed;
+    public SeedProperties Seed { get => seed; set => seed = value;}
+    public Action<MapGeneratorMode> InvokeMe;    
     
     private float CalculateNoise(float x, float y) 
     {
-
         float noise = Mathf.PerlinNoise((x + seed.seed + (seed.seed + seed.dimension5)+ (seed.seed * seed.dimension4 * seed.dimension5))  / seed.scale,
             (y + seed.dimension6 + (seed.seed + seed.dimension5) + (seed.seed * seed.dimension4 * seed.dimension5)) / seed.scale) ;
         
@@ -22,40 +21,47 @@ public class MapGenerator : MonoBehaviour
     }
     private IEnumerator StartWorld()
     {
-        seed = Pseed;
-        for(int n = 0; n < Matrix.map.ExtentionX; n++)
+        for(int n = 0; n < Matrix.matrix.MapProperties.ExtentionX; n++)
         {
             yield return null;
 
-            for (int m = 0; m < Matrix.map.ExtentionY; m++) 
+            for (int m = 0; m < Matrix.matrix.MapProperties.ExtentionY; m++) 
             {
-                Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(0).GetTilePrefab(CalculateNoise(n,m)), new Vector3(n,m,0f),Quaternion.identity);
+                Matrix.tiles[n,m].tileInstance = Instantiate(TileSet.tileset.GetBioma(0).GetTilePrefab(CalculateNoise(n,m), 
+                    out Matrix.tiles[n,m].Properties.level), 
+                    new Vector3(n,m,0f),Quaternion.identity);
             }
-           
         }
     }
-    public void ResetWorld() 
+    public void RestartWorld(MapGeneratorMode mode) 
     {
-        foreach( Tile tile in Matrix.tiles) 
+        if (mode == MapGeneratorMode.Restart)
         {
-            
-            Destroy(tile.tileInstance); 
-            
-
+            foreach (Tile tile in Matrix.tiles)
+            {
+                Destroy(tile.tileInstance);
+            }
+            StartCoroutine(StartWorld());
+            Matrix.matrix.SaveMap();
         }
-        StartCoroutine(StartWorld());
-        Matrix.SaveMap();
-        reset = false;
     }
-    private void Start()
+    public void LoadWorld(MapGeneratorMode mode) 
     {
-        StartCoroutine(StartWorld());
-        InvokeMe = new theDelegate(ResetWorld);   
-    }
-    public void StartWorldCoroutine() { StartCoroutine(StartWorld()); Matrix.SaveMap(); }
 
+    }
+    private void OnEnable()
+    {
+        InvokeMe += StartWorldCoroutine;
+        InvokeMe += SaveWorld;
+        InvokeMe += RestartWorld;  
+    }
+    public void StartWorldCoroutine(MapGeneratorMode mode) { if (mode == MapGeneratorMode.Start)StartCoroutine(StartWorld());}
+    public void SaveWorld(MapGeneratorMode mMode) { if (mMode == MapGeneratorMode.Save) Matrix.matrix.SaveMap(); }
     private void Update()
     {
-        if (Input.anyKeyDown && reset) { InvokeMe(); reset = false; }
+        if (Input.GetKey(KeyCode.R)) InvokeMe(MapGeneratorMode.Restart); 
+        if (Input.GetKey(KeyCode.Space)) InvokeMe(MapGeneratorMode.Start); 
+        if (Input.GetKey(KeyCode.S)) InvokeMe(MapGeneratorMode.Save);
+
     }
 }
