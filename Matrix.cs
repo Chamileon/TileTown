@@ -5,25 +5,17 @@ using UnityEngine;
 public class Matrix : MonoBehaviour {
 
     public static Matrix matrix;
-    public static Chunk[,] Chunks;
     [SerializeField] private MapProperties mapProperties;
     private Chunk[,] chunks;
     public static Tile[,] tiles;
-
-    public MapProperties MapProperties { get => mapProperties as MapProperties;private set { mapProperties = (MapProperties)value; } }
-    public  void SaveMap() 
-    {
-        mapProperties.seed = MapGenerator.mapGenerator.Seed;
-        
-    }
+    public MapProperties MapProperties { get => mapProperties; private set { mapProperties = value; } }
     
-    
-    public static Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
-    public static Tile GetTileFromID(int X, int Y,int x, int y) 
+    public  void SaveSeed() { mapProperties.seed = MapGenerator.mapGenerator.Seed;}
+    public Chunk GetChunkFromID(int X, int Y) { return chunks[X, Y]; }
+    public Tile GetTileFromID(int X, int Y,int x, int y) 
     {
         return GetChunkFromID(X, Y).GetTileByIndex(x, y);
     }
-    
     private void Singleton()
     {
         if (matrix != null) { Destroy(gameObject); } else { matrix = this; }
@@ -49,8 +41,6 @@ public class Matrix : MonoBehaviour {
                 }
             }
         }
-        Chunks = chunks;
-
     }
     private void Start()
     {
@@ -60,7 +50,7 @@ public class Matrix : MonoBehaviour {
         /* 
             +Delete the next example
         */
-        foreach(Chunk Chunkie in Chunks) 
+        foreach(Chunk Chunkie in chunks) 
         {
             Debug.Log("ID: " + Chunkie.GetID().x + ", " + Chunkie.GetID().y);
             foreach (Tile tile in Chunkie.GetTilesFromChunk())
