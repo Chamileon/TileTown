@@ -6,5 +6,5 @@ using UnityEngine;
 public class MapSave : ScriptableObject
 {
     public int Bioma;
-    public int[,] Levels;
+    public int[,] Levels = new int[1000,1000];
 }

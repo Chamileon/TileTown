@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu(menuName: "Matrix")]
+[RequireComponent(typeof(MapGenerator))]
+[RequireComponent(typeof(God))]
 public class Matrix : MonoBehaviour {
 
     public static Matrix matrix;
@@ -10,19 +13,34 @@ public class Matrix : MonoBehaviour {
     public static Tile[,] tiles;
     public MapProperties MapProperties { get => mapProperties; private set { mapProperties = value; } }
     
-    public  void SaveSeed() { mapProperties.seed = MapGenerator.mapGenerator.Seed;}
+    public void DeleteTiles()
+    {
+        foreach (var tile in tiles) 
+        {
+            if (tile.tileInstance != null) { Destroy(tile.tileInstance); }
+            else Debug.Log("NO se destruyó nada :(");
+        }
+    }
+    public void LoadSeed() 
+    {
+        MapGenerator.mapGenerator.seed = MapProperties.seed;
+    }
+    
+    public  void SaveSeed() 
+    {
+        Debug.Log(MapProperties.seed);
+        Debug.Log(MapGenerator.mapGenerator.seed);
+        MapProperties.seed = MapGenerator.mapGenerator.seed;
+    }
     public Chunk GetChunkFromID(int X, int Y) { return chunks[X, Y]; }
     public Tile GetTileFromID(int X, int Y,int x, int y) 
     {
         return GetChunkFromID(X, Y).GetTileByIndex(x, y);
     }
-    private void Singleton()
-    {
-        if (matrix != null) { Destroy(gameObject); } else { matrix = this; }
-    }
+   
     public void InitializeMe() 
     {
-        Singleton();
+        matrix = this;
         chunks = new Chunk[mapProperties.X, mapProperties.Y];
         tiles = new Tile[mapProperties.ExtentionX,mapProperties.ExtentionY];
         for (int i = 0; i < mapProperties.X; i++)
@@ -42,7 +60,7 @@ public class Matrix : MonoBehaviour {
             }
         }
     }
-    private void Start()
+    private void Awake()
     {
         InitializeMe();
  

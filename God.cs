@@ -11,12 +11,5 @@ public class God : MonoBehaviour
     private void OnEnable()
     {
         if (god == null) { god = this; } else { Destroy(gameObject); }    
-    }
-    public static God GetGod { get { return god; } }
-    private static Matrix mapMatrix;
-    private void Awake()
-    {
-        mapMatrix = GetComponent<Matrix>();
-    }
-    public Matrix GetMatrix { get { return mapMatrix; } }  
+    } 
 }

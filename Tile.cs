@@ -12,7 +12,7 @@ public class Tile
     public TileProperties Properties { get => properties; set => properties = value; }
     public Tile GetMe() { return this as Tile; }
     public GameObject tileInstance;
-    public GameObject GetTileInWorld() { return tileInstance; }
+    
 }
 
 [System.Serializable]

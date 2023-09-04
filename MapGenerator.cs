@@ -4,17 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum MapGeneratorMode { None, Start, Restart, ResetAndLoad, SaveSeed, SaveMap }
+public enum MapGeneratorMode { None, Start, Restart, SaveSeed, LoadSeed, SaveMap, SaveEverything, ResetAndLoad }
+[RequireComponent(typeof(Matrix))]
+[RequireComponent(typeof(God))]
+
 public class MapGenerator : MonoBehaviour
 {
-    public MapGeneratorMode mode;
     public static MapGenerator mapGenerator;
-    public int mapSavesNumber = 15;
-    public MapSave[] mapSaves;
-    [SerializeField] private SeedProperties seed;
-    public SeedProperties Seed { get => seed; set => seed = value;}
-    public Action<MapGeneratorMode> InvokeMe;    
-    
+    public MapGeneratorMode mode;
+    [Header("Save System")]
+    [SerializeField] [Range(0, 14)] private int selectMapSave;
+    [SerializeField] private MapSave[] mapSaves;
+    [SerializeField] public SeedProperties seed;
+    public Action<MapGeneratorMode> InvokeMe;
+    private void Awake()
+    {
+        mapGenerator = this;
+    }
     private float CalculateNoise(float x, float y) 
     {
         float noise = Mathf.PerlinNoise((x + seed.seed + (seed.seed + seed.dimension5)+ (seed.seed * seed.dimension4 * seed.dimension5))  / seed.scale,
@@ -24,6 +30,7 @@ public class MapGenerator : MonoBehaviour
     }
     private IEnumerator StartWorld(int bioma)
     {
+        DeleteWorld();
         for(int n = 0; n < Matrix.matrix.MapProperties.ExtentionX; n++)
         {
             yield return null;
@@ -35,7 +42,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-    public void RestartWorld(MapGeneratorMode mode) 
+    private void RestartWorld(MapGeneratorMode mode) 
     {
         if (mode == MapGeneratorMode.Restart)
         {
@@ -45,27 +52,29 @@ public class MapGenerator : MonoBehaviour
     }
     private void DeleteWorld() 
     {
-        foreach (Tile tile in Matrix.tiles)
-        {
-            Destroy(tile.tileInstance);
-        }
+        Debug.Log("Delete¡¡¡");
+        Matrix.matrix.DeleteTiles();
     }
-    public void LoadWorld(MapGeneratorMode mode) 
+    private void SaveEverything(MapGeneratorMode mode) 
     {
-        if(mode == MapGeneratorMode.ResetAndLoad) 
+        if(mode == MapGeneratorMode.SaveEverything) 
         {
-            DeleteWorld();
+            SaveSeed(MapGeneratorMode.SaveSeed);
+            SaveMap(MapGeneratorMode.SaveMap);
 
         }
     }
+    
     private void OnEnable()
     {
         InvokeMe += StartWorldCoroutine;
         InvokeMe += SaveSeed;
+        InvokeMe += LoadSeed;
         InvokeMe += RestartWorld;
         InvokeMe += SaveMap;
         InvokeMe += LoadMap;
-    }
+        InvokeMe += SaveEverything;
+     }
     public void StartWorldCoroutine(MapGeneratorMode mode) { if (mode == MapGeneratorMode.Start) StartCoroutine(StartWorld(0));}
     public void SaveSeed(MapGeneratorMode mode) { if (mode == MapGeneratorMode.SaveSeed) Matrix.matrix.SaveSeed(); }
     public void SaveMap(MapGeneratorMode mode) 
@@ -85,9 +94,18 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+    public void LoadSeed(MapGeneratorMode mode) 
+    {
+        if(mode == MapGeneratorMode.LoadSeed) 
+        {
+            DeleteWorld();
+            Matrix.matrix.LoadSeed();
+            StartWorldCoroutine(MapGeneratorMode.Start);
+        }
+    }
     public void LoadMap(MapGeneratorMode mode) 
     {
-        if (mode == MapGeneratorMode.ResetAndLoad) { StartCoroutine(MapSaveLoader(mapSaves[mapSavesNumber])); }
+        if (mode == MapGeneratorMode.ResetAndLoad) { StartCoroutine(MapSaveLoader(mapSaves[selectMapSave])); }
     }
     IEnumerator MapSaveLoader(MapSave ms) 
     {
@@ -109,7 +127,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
     private void Update()
-    { 
-        if (Input.GetKey(KeyCode.Space)) InvokeMe(mode);
+    {
+        if (Input.GetKey(KeyCode.Space)) { InvokeMe(mode); mode = MapGeneratorMode.None; }
     }
 }
