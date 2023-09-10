@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 
+<<<<<<< HEAD
 public enum MapGeneratorMode { None, Start, Restart, SaveSeed, LoadSeed, SaveMap, SaveEverything, ResetAndLoad }
 [RequireComponent(typeof(Matrix))]
 [RequireComponent(typeof(God))]
@@ -18,6 +19,12 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] [Range(0, 14)] private int selectMapPath;
     [SerializeField] private string[] mapSavesPath;
     [SerializeField] [Range(0,0)] private int selectBioma = 0; //Cambiar rango al añadir biomas
+=======
+public enum MapGeneratorMode { None, Start, Restart, ResetAndLoad, Save }
+public class MapGenerator : MonoBehaviour
+{
+    public static MapGenerator mapGenerator;
+>>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
     [SerializeField] private SeedProperties seed;
     public SeedProperties Seed { get { return seed; } set { seed = value; } }
     public Action<MapGeneratorMode> InvokeMe;
@@ -32,18 +39,27 @@ public class MapGenerator : MonoBehaviour
         
         return noise;
     }
-    private IEnumerator StartWorld(int bioma)
+    private IEnumerator StartWorld()
     {
         DeleteWorld();
         for(int n = 0; n < Matrix.matrix.MapProperties.ExtentionX; n++)
         {
             yield return null;
+<<<<<<< HEAD
             
             for (int m = 0; m < Matrix.matrix.MapProperties.ExtentionY; m++) 
             {
                 Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(bioma).GetTileByPerlin(CalculateNoise(n, m), 
                     out Matrix.tiles[n, m].Properties.level), 
                     new Vector3(n, m, 0f),Quaternion.identity);
+=======
+
+            for (int m = 0; m < Matrix.matrix.MapProperties.ExtentionY; m++) 
+            {
+                Matrix.tiles[n,m].tileInstance = Instantiate(TileSet.tileset.GetBioma(0).GetTilePrefab(CalculateNoise(n,m), 
+                    out Matrix.tiles[n,m].Properties.level), 
+                    new Vector3(n,m,0f),Quaternion.identity);
+>>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
             }
         }
     }
@@ -51,6 +67,7 @@ public class MapGenerator : MonoBehaviour
     {
         if (mode == MapGeneratorMode.Restart)
         {
+<<<<<<< HEAD
             DeleteWorld();
             StartCoroutine(StartWorld(selectBioma));
         }
@@ -59,20 +76,32 @@ public class MapGenerator : MonoBehaviour
     {
         Debug.Log("Delete¡¡¡");
         Matrix.matrix.DeleteTiles();
+=======
+            foreach (Tile tile in Matrix.tiles)
+            {
+                Destroy(tile.tileInstance);
+            }
+            StartCoroutine(StartWorld());
+            Matrix.matrix.SaveMap();
+        }
+>>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
     }
     private void SaveEverything(MapGeneratorMode mode) 
     {
+<<<<<<< HEAD
         if(mode == MapGeneratorMode.SaveEverything) 
         {
             SaveSeed(MapGeneratorMode.SaveSeed);
             SaveMap(MapGeneratorMode.SaveMap);
+=======
+>>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
 
-        }
     }
     
     private void OnEnable()
     {
         InvokeMe += StartWorldCoroutine;
+<<<<<<< HEAD
         InvokeMe += SaveSeed;
         InvokeMe += LoadSeed;
         InvokeMe += RestartWorld;
@@ -145,9 +174,22 @@ public class MapGenerator : MonoBehaviour
             }
         }
         
+=======
+        InvokeMe += SaveWorld;
+        InvokeMe += RestartWorld;  
+>>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
     }
+    public void StartWorldCoroutine(MapGeneratorMode mode) { if (mode == MapGeneratorMode.Start)StartCoroutine(StartWorld());}
+    public void SaveWorld(MapGeneratorMode mMode) { if (mMode == MapGeneratorMode.Save) Matrix.matrix.SaveMap(); }
     private void Update()
     {
+<<<<<<< HEAD
         if (Input.GetKey(KeyCode.Space)) { InvokeMe(mode); mode = MapGeneratorMode.None; }
+=======
+        if (Input.GetKey(KeyCode.R)) InvokeMe(MapGeneratorMode.Restart); 
+        if (Input.GetKey(KeyCode.Space)) InvokeMe(MapGeneratorMode.Start); 
+        if (Input.GetKey(KeyCode.S)) InvokeMe(MapGeneratorMode.Save);
+
+>>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
     }
 }
