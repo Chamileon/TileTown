@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 
 public enum MapGeneratorMode { None, Start, Restart, SaveSeed, LoadSeed, SaveMap, SaveEverything, ResetAndLoad }
@@ -13,9 +15,11 @@ public class MapGenerator : MonoBehaviour
     public static MapGenerator mapGenerator;
     public MapGeneratorMode mode;
     [Header("Save System")]
-    [SerializeField] [Range(0, 14)] private int selectMapSave;
-    [SerializeField] private MapSave[] mapSaves;
-    [SerializeField] public SeedProperties seed;
+    [SerializeField] [Range(0, 14)] private int selectMapPath;
+    [SerializeField] private string[] mapSavesPath;
+    [SerializeField] [Range(0,0)] private int selectBioma = 0; //Cambiar rango al añadir biomas
+    [SerializeField] private SeedProperties seed;
+    public SeedProperties Seed { get { return seed; } set { seed = value; } }
     public Action<MapGeneratorMode> InvokeMe;
     private void Awake()
     {
@@ -34,11 +38,12 @@ public class MapGenerator : MonoBehaviour
         for(int n = 0; n < Matrix.matrix.MapProperties.ExtentionX; n++)
         {
             yield return null;
+            
             for (int m = 0; m < Matrix.matrix.MapProperties.ExtentionY; m++) 
             {
-                Matrix.tiles[n,m].tileInstance = Instantiate(TileSet.tileset.GetBioma(bioma).GetTilePrefab(CalculateNoise(n,m), 
-                    out Matrix.tiles[n,m].Properties.level), 
-                    new Vector3(n,m,0f),Quaternion.identity);
+                Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(bioma).GetTileByPerlin(CalculateNoise(n, m), 
+                    out Matrix.tiles[n, m].Properties.level), 
+                    new Vector3(n, m, 0f),Quaternion.identity);
             }
         }
     }
@@ -47,7 +52,7 @@ public class MapGenerator : MonoBehaviour
         if (mode == MapGeneratorMode.Restart)
         {
             DeleteWorld();
-            StartCoroutine(StartWorld(0));
+            StartCoroutine(StartWorld(selectBioma));
         }
     }
     private void DeleteWorld() 
@@ -75,7 +80,7 @@ public class MapGenerator : MonoBehaviour
         InvokeMe += LoadMap;
         InvokeMe += SaveEverything;
      }
-    public void StartWorldCoroutine(MapGeneratorMode mode) { if (mode == MapGeneratorMode.Start) StartCoroutine(StartWorld(0));}
+    public void StartWorldCoroutine(MapGeneratorMode mode) { if (mode == MapGeneratorMode.Start) StartCoroutine(StartWorld(selectBioma));}
     public void SaveSeed(MapGeneratorMode mode) { if (mode == MapGeneratorMode.SaveSeed) Matrix.matrix.SaveSeed(); }
     public void SaveMap(MapGeneratorMode mode) 
     {
@@ -84,14 +89,20 @@ public class MapGenerator : MonoBehaviour
             int x, y;
             x = Matrix.matrix.MapProperties.ExtentionX;
             y = Matrix.matrix.MapProperties.ExtentionY;
-            mapSaves[0].Levels = new int[x,y];
+            MapFile mapFile = new MapFile();
             for (int i = 0; i < x; i++)
             {
                 for (int j = 0;j < y; j++)
                 {
-                    mapSaves[0].Levels[i,j] = Matrix.tiles[i, j].Properties.level;
+                    mapFile.AddLevel(Matrix.tiles[i,j].Properties.level, i, j);
                 }
             }
+            string dataPath = Application.persistentDataPath + mapSavesPath[selectMapPath];
+            FileStream fileStream = new FileStream(dataPath, FileMode.Create);
+            BinaryFormatter bf = new BinaryFormatter();
+            bf.Serialize(fileStream, mapFile);
+            fileStream.Close();
+
         }
     }
     public void LoadSeed(MapGeneratorMode mode) 
@@ -105,26 +116,35 @@ public class MapGenerator : MonoBehaviour
     }
     public void LoadMap(MapGeneratorMode mode) 
     {
-        if (mode == MapGeneratorMode.ResetAndLoad) { StartCoroutine(MapSaveLoader(mapSaves[selectMapSave])); }
+        if (mode == MapGeneratorMode.ResetAndLoad) { StartCoroutine(MapLoader()); }
+                                                   
     }
-    IEnumerator MapSaveLoader(MapSave ms) 
+    IEnumerator MapLoader() 
     {
         DeleteWorld();
         int x, y;
         x = Matrix.matrix.MapProperties.ExtentionX;
         y = Matrix.matrix.MapProperties.ExtentionY;
-        for (int i = 0; i < x; i++)
+        MapFile mapFile = new MapFile();
+        string dataPath = Application.persistentDataPath + mapSavesPath[selectMapPath];
+        if (File.Exists(dataPath)) 
         {
-            yield return null;
-            for (int j = 0; j < y; j++)
+            FileStream fs = new FileStream(dataPath, FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+            mapFile = (MapFile)bf.Deserialize(fs);
+            for (int i = 0; i < x; i++)
             {
+                yield return null;
+                for (int j = 0; j < y; j++)
+                {
+                    Matrix.tiles[i, j].tileInstance = Instantiate(TileSet.tileset.GetBioma(mapFile.Bioma).GetTileByInt(mapFile.levelOfTile[i, j]),
+                        new Vector3(i, j, 0f), Quaternion.identity);
                 
-                Matrix.tiles[i, j].tileInstance = Instantiate(
-                    TileSet.tileset.GetBioma(ms.Bioma).GetTilePrefab(ms.Levels[i, j],
-                    out Matrix.tiles[i, j].Properties.level),
-                    new Vector3(i, j, 0f), Quaternion.identity);
+                               
+                }
             }
         }
+        
     }
     private void Update()
     {

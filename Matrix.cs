@@ -23,14 +23,14 @@ public class Matrix : MonoBehaviour {
     }
     public void LoadSeed() 
     {
-        MapGenerator.mapGenerator.seed = MapProperties.seed;
+        MapGenerator.mapGenerator.Seed = MapProperties.seed;
     }
     
     public  void SaveSeed() 
     {
         Debug.Log(MapProperties.seed);
-        Debug.Log(MapGenerator.mapGenerator.seed);
-        MapProperties.seed = MapGenerator.mapGenerator.seed;
+        Debug.Log(MapGenerator.mapGenerator.Seed);
+        MapProperties.seed = MapGenerator.mapGenerator.Seed;
     }
     public Chunk GetChunkFromID(int X, int Y) { return chunks[X, Y]; }
     public Tile GetTileFromID(int X, int Y,int x, int y) 

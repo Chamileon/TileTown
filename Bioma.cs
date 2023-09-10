@@ -9,7 +9,24 @@ public class Bioma : ScriptableObject
     [SerializeField] private GameObject[] tilesPrefab;
     [SerializeField] [Range(0.0f, 1f)] private float[] levels;
     public Sprite GetSprite(int BiomaNumber) { return sprites[BiomaNumber]; }
-    public GameObject GetTilePrefab(float LevelNumberFloat, out int level) {
+    public GameObject GetTileByInt(int tileNumber) 
+    {
+        switch (tileNumber) 
+        {
+            case 0: return tilesPrefab[0];
+            case 1: return tilesPrefab[1];
+            case 2: return tilesPrefab[2];
+            case 3: return tilesPrefab[3];
+            case 4: return tilesPrefab[4];
+            case 5: return tilesPrefab[5];
+            case 6: return tilesPrefab[6];
+            case 7: return tilesPrefab[7];
+            case 8: return tilesPrefab[8];
+            case 9: return tilesPrefab[9];
+                default: return tilesPrefab[9];
+        }
+    }
+    public GameObject GetTileByPerlin(float LevelNumberFloat, out int level) {
         if (LevelNumberFloat < levels[0])
         {
             level = 0;

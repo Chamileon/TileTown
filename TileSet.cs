@@ -17,13 +17,9 @@ public class TileSet : MonoBehaviour
     }
     private void Awake()
     {
-        Singleton();
         InitializeMe();
     }
-    private void Singleton() 
-    {
-        if (tileset == null) { tileset = this; } else { Destroy(gameObject); }
-    }
+    
     private void InitializeMe() 
     {
         tilePrefab = tilesPrefab;
