@@ -18,7 +18,8 @@ public class MapProperties : ScriptableObject
     [TextArea(3, 20)]
     public string description;
     [Header("Seed")]
-    [SerializeField] public SeedProperties seed;
+    [SerializeField] private SeedProperties seed;
+    public SeedProperties Seed { get { return seed; } set { seed = value; } }
 
     
 }

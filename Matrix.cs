@@ -13,52 +13,40 @@ public class Matrix : MonoBehaviour {
     private Chunk[,] chunks;
     public static Tile[,] tiles;
 
-    public MapProperties MapProperties { get => mapProperties as MapProperties;private set { mapProperties = (MapProperties)value; } }
+    public MapProperties MapProperties { get => mapProperties; set { mapProperties = value; } }
     public  void SaveMap() 
     {
-        mapProperties.seed = MapGenerator.mapGenerator.Seed;
+        mapProperties.Seed = MapGenerator.mapGenerator.Seed;
         
     }
-    
-<<<<<<< HEAD
     public void DeleteTiles()
     {
         foreach (var tile in tiles) 
         {
             if (tile.tileInstance != null) { Destroy(tile.tileInstance); }
-            else Debug.Log("NO se destruyó nada :(");
         }
     }
     public void LoadSeed() 
     {
-        MapGenerator.mapGenerator.Seed = MapProperties.seed;
+        Debug.Log(MapProperties.Seed + " Loaded Seed");
+        SeedProperties properties = MapProperties.Seed.Clone();
+        MapGenerator.mapGenerator.Seed = properties;
+        
+        
+
     }
-    
+
     public  void SaveSeed() 
     {
-        Debug.Log(MapProperties.seed);
-        Debug.Log(MapGenerator.mapGenerator.Seed);
-        MapProperties.seed = MapGenerator.mapGenerator.Seed;
+        Debug.Log(MapProperties.Seed + " Saved Seed");
+        SeedProperties properties = MapGenerator.mapGenerator.Seed.Clone();
+        mapProperties.Seed = properties;
     }
     public Chunk GetChunkFromID(int X, int Y) { return chunks[X, Y]; }
     public Tile GetTileFromID(int X, int Y,int x, int y) 
     {
         return GetChunkFromID(X, Y).GetTileByIndex(x, y);
     }
-   
-=======
-    
-    public static Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
-    public static Tile GetTileFromID(int X, int Y,int x, int y) 
-    {
-        return GetChunkFromID(X, Y).GetTileByIndex(x, y);
-    }
-    
-    private void Singleton()
-    {
-        if (matrix != null) { Destroy(gameObject); } else { matrix = this; }
-    }
->>>>>>> parent of 0f8c46a (Developing the Save & Load Tile System)
     public void InitializeMe() 
     {
         matrix = this;

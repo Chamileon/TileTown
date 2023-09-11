@@ -17,11 +17,13 @@ public class TileSet : MonoBehaviour
     }
     private void Awake()
     {
+
         InitializeMe();
     }
     
     private void InitializeMe() 
     {
+        tileset = this;
         tilePrefab = tilesPrefab;
     }
 }
