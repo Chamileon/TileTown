@@ -43,7 +43,10 @@ public class MapGenerator : MonoBehaviour
             for (int m = 0; m < Matrix.matrix.MapProperties.ExtentionY; m++)
             {
                 Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(bioma).GetTileByPerlin(CalculateNoise(n, m),
-                    out Matrix.tiles[n, m].Properties.level),
+                    out Matrix.tiles[n, m].Properties.level,
+                    out Matrix.tiles[n, m].Properties.walkable,
+                    out Matrix.tiles[n, m].Properties.constructable,
+                    out Matrix.tiles[n, m].Properties.haveEffect),
                     new Vector3(n, m, 0f), Quaternion.identity);
             }
         }
@@ -109,7 +112,8 @@ public class MapGenerator : MonoBehaviour
                 Debug.Log("Paso 01");
                 for (int j = 0; j < y; j++)
                 {
-                    mapFile.AddLevel(Matrix.tiles[i, j].Properties.level, i, j);
+                    TileProperties prop = Matrix.tiles[i, j].Properties;
+                    mapFile.Add(i, j, prop.level, prop.walkable, prop.constructable, prop.haveEffect);
                 }
             }
             string dataPath = Application.persistentDataPath + mapSavesPath[selectMapPath];
@@ -148,10 +152,13 @@ public class MapGenerator : MonoBehaviour
                 yield return null;
                 for (int j = 0; j < y; j++)
                 {
-                    Matrix.tiles[i, j].tileInstance = Instantiate(TileSet.tileset.GetBioma(mapFile.Bioma).GetTileByInt(mapFile.levelOfTile[i, j]),
+                    Tile t = Matrix.tiles[i, j];
+                    t.tileInstance = Instantiate(TileSet.tileset.GetBioma(mapFile.Bioma).GetTileByInt(mapFile.levelOfTile[i, j]),
                         new Vector3(i, j, 0f), Quaternion.identity);
-
-
+                    t.Properties.level = mapFile.levelOfTile[i, j];
+                    t.Properties.walkable = mapFile.walkable[i, j];
+                    t.Properties.constructable = mapFile.constructable[i, j];
+                    t.Properties.haveEffect = mapFile.haveEffect[i, j];
                 }
             }
         }

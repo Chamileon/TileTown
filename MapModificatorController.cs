@@ -11,7 +11,7 @@ public class MapModificatorController : MonoBehaviour
     }
     public void ModifyMap() 
     {
-        MapModificator.ModifyMap();
+        MapModificator.SelectTile();
     }
     void Update()
     {

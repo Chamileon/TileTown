@@ -17,7 +17,7 @@ public class Chunk
         {
             for(int j = 0; j < y; j++) 
             {
-                tiles[i, j] = new Tile( i + ((int)ID.x * x), j + ((int)ID.y * y), false, false, false);
+                tiles[i, j] = new Tile( i + ((int)ID.x * x), j + ((int)ID.y * y));
             }
         }
     }
