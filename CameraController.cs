@@ -24,8 +24,6 @@ public class CameraController : MonoBehaviour
     public void Move() 
     {
         Vector3 direction = new Vector3(joystick.Horizontal, joystick.Vertical, 0f) * Speed;
-        //Mathf.Clamp(pos.x, offSetX, Matrix.matrix.MapProperties.ExtentionX - offSetX);
-        //Mathf.Clamp(pos.y, offSetY, Matrix.matrix.MapProperties.ExtentionY - offSetY);
         transform.position += direction;
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, offSetX, Matrix.matrix.MapProperties.ExtentionX - offSetX * 2f),
             Mathf.Clamp(transform.position.y, offSetY, Matrix.matrix.MapProperties.ExtentionY - offSetY), -10f);

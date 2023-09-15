@@ -42,12 +42,11 @@ public class MapGenerator : MonoBehaviour
 
             for (int m = 0; m < Matrix.matrix.MapProperties.ExtentionY; m++)
             {
-                Matrix.tiles[n, m].tileInstance = Instantiate(TileSet.tileset.GetBioma(bioma).GetTileByPerlin(CalculateNoise(n, m),
-                    out Matrix.tiles[n, m].Properties.level,
-                    out Matrix.tiles[n, m].Properties.walkable,
-                    out Matrix.tiles[n, m].Properties.constructable,
-                    out Matrix.tiles[n, m].Properties.haveEffect),
-                    new Vector3(n, m, 0f), Quaternion.identity);
+                Matrix.Tiles[n, m].tileInstance.GetComponent<SpriteRenderer>().color = TileSet.tileset.GetBioma(bioma).GetColorByPerlin(CalculateNoise(n, m),
+                    out Matrix.Tiles[n, m].Properties.level,
+                    out Matrix.Tiles[n, m].Properties.walkable,
+                    out Matrix.Tiles[n, m].Properties.constructable,
+                    out Matrix.Tiles[n, m].Properties.haveEffect);
             }
         }
     }
@@ -61,11 +60,9 @@ public class MapGenerator : MonoBehaviour
     }
     private void DeleteWorld()
     {
-        Debug.Log("Delete¡¡¡");
-        Matrix.matrix.DeleteTiles();
-        foreach (Tile tile in Matrix.tiles)
+        foreach (Tile tile in Matrix.Tiles)
         {
-            Destroy(tile.tileInstance);
+            tile.tileInstance.GetComponent<SpriteRenderer>().color = Color.black;
         }
     }
     private void SaveEverything(MapGeneratorMode mode)
@@ -112,7 +109,7 @@ public class MapGenerator : MonoBehaviour
                 Debug.Log("Paso 01");
                 for (int j = 0; j < y; j++)
                 {
-                    TileProperties prop = Matrix.tiles[i, j].Properties;
+                    TileProperties prop = Matrix.Tiles[i, j].Properties;
                     mapFile.Add(i, j, prop.level, prop.walkable, prop.constructable, prop.haveEffect);
                 }
             }
@@ -152,24 +149,21 @@ public class MapGenerator : MonoBehaviour
                 yield return null;
                 for (int j = 0; j < y; j++)
                 {
-                    Tile t = Matrix.tiles[i, j];
-                    t.tileInstance = Instantiate(TileSet.tileset.GetBioma(mapFile.Bioma).GetTileByInt(mapFile.levelOfTile[i, j]),
-                        new Vector3(i, j, 0f), Quaternion.identity);
-                    t.Properties.level = mapFile.levelOfTile[i, j];
-                    t.Properties.walkable = mapFile.walkable[i, j];
-                    t.Properties.constructable = mapFile.constructable[i, j];
-                    t.Properties.haveEffect = mapFile.haveEffect[i, j];
+                    Tile t = Matrix.Tiles[i, j];
+                    t.tileInstance.GetComponent<SpriteRenderer>().color = TileSet.tileset.GetBioma(mapFile.Bioma).GetTileColorByLevel(mapFile.levelOfTile[i, j]);
+                    TileProperties prop = t.Properties;
+                    prop.level = mapFile.levelOfTile[i, j];
+                    prop.walkable = mapFile.walkable[i, j];
+                    prop.constructable = mapFile.constructable[i, j];
+                    prop.haveEffect = mapFile.haveEffect[i, j];
                 }
             }
         }
     }
-    private void Update()
+    public void InitializeGame()
     {
-        if(Input.anyKeyDown && Mode != MapGeneratorMode.None) 
-        {
-            InvokeMe(Mode);
-            Mode = MapGeneratorMode.None;
+        InvokeMe(MapGeneratorMode.Start);
+        Mode = MapGeneratorMode.None;
 
-        }
     }
 }

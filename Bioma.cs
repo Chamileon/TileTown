@@ -5,30 +5,77 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Create Bioma" , fileName = "New Bioma")]
 public class Bioma : ScriptableObject
 {
-    [SerializeField] private Sprite[] sprites;
-    [SerializeField] private GameObject[] tilesPrefab;
+    //[SerializeField] private Sprite[] sprites;
+    [SerializeField] private Color[] _tileColor;
     [SerializeField] [Range(0.0f, 1f)] private float[] levels;
-    public Sprite GetSprite(int BiomaNumber) { return sprites[BiomaNumber]; }
-    public GameObject GetTileByInt(int tileNumber) 
+
+
+    public Color GetTileColorByLevel(int level) 
     {
-        switch (tileNumber) 
+        return _tileColor[level];
+    }
+    public Color GetTileColorByLevel(int level, out bool walkable, out bool constructable, out bool haveEffect) 
+    {
+        switch (level) 
         {
-            case 0: 
-                
-                return tilesPrefab[0];
-            case 1: return tilesPrefab[1];
-            case 2: return tilesPrefab[2];
-            case 3: return tilesPrefab[3];
-            case 4: return tilesPrefab[4];
-            case 5: return tilesPrefab[5];
-            case 6: return tilesPrefab[6];
-            case 7: return tilesPrefab[7];
-            case 8: return tilesPrefab[8];
-            case 9: return tilesPrefab[9];
-                default: return tilesPrefab[9];
+            case 0:
+                walkable = false;
+                constructable = false;
+                haveEffect = true;
+                return _tileColor[0];
+            case 1:
+                walkable = false;
+                constructable = false;
+                haveEffect = true;
+                return _tileColor[1];
+            case 2:
+                walkable = false;
+                constructable = false;
+                haveEffect = true;
+                return _tileColor[2];
+            case 3:
+                walkable = true;
+                constructable = false;
+                haveEffect = false;
+                return _tileColor[3];
+            case 4:
+                walkable = true;
+                constructable = true;
+                haveEffect = false;
+                return _tileColor[4];
+            case 5:
+                walkable = true;
+                constructable = true;
+                haveEffect = false;
+                return _tileColor[5];
+            case 6:
+                walkable = true;
+                constructable = true;
+                haveEffect = false;
+                return _tileColor[6];
+            case 7:
+                walkable = true;
+                constructable = true;
+                haveEffect = false;
+                return _tileColor[7];
+            case 8:
+                walkable = false;
+                constructable = false;
+                haveEffect = false;
+                return _tileColor[8];
+            case 9:
+                walkable = false;
+                constructable = false;
+                haveEffect = false;
+                return _tileColor[9];
+                    default:
+                        walkable = false;
+                        constructable = false;
+                        haveEffect = false;
+                        return _tileColor[9];
         }
     }
-    public GameObject GetTileByPerlin(float LevelNumberFloat,out int level,out bool walkable,out bool constructable, out bool haveEffect) {
+    public Color GetColorByPerlin(float LevelNumberFloat,out int level,out bool walkable,out bool constructable, out bool haveEffect) {
         if (LevelNumberFloat < levels[0])
         {
             level = 0;
@@ -36,7 +83,7 @@ public class Bioma : ScriptableObject
             constructable = false;
             haveEffect = true;
 
-            return tilesPrefab[0];
+            return _tileColor[0];
         }
         else if (LevelNumberFloat < levels[1])
         {
@@ -44,7 +91,7 @@ public class Bioma : ScriptableObject
             walkable = false;
             constructable = false;
             haveEffect = true;
-            return tilesPrefab[1];
+            return _tileColor[1];
         }
         else if (LevelNumberFloat < levels[2])
         {
@@ -52,7 +99,7 @@ public class Bioma : ScriptableObject
             walkable = false;
             constructable = false;
             haveEffect = true;
-            return tilesPrefab[2];
+            return _tileColor[2];
         }
         else if (LevelNumberFloat < levels[3])
         {
@@ -60,7 +107,7 @@ public class Bioma : ScriptableObject
             walkable = true;
             constructable = false;
             haveEffect = false;
-            return tilesPrefab[3];
+            return _tileColor[3];
         }
         else if (LevelNumberFloat < levels[4])
         {
@@ -68,7 +115,7 @@ public class Bioma : ScriptableObject
             walkable = true;
             constructable = true;
             haveEffect = false;
-            return tilesPrefab[4];
+            return _tileColor[4];
         }
         else if (LevelNumberFloat < levels[5])
         {
@@ -76,7 +123,7 @@ public class Bioma : ScriptableObject
             walkable = true;
             constructable = true;
             haveEffect = false;
-            return tilesPrefab[5];
+            return _tileColor[5];
         }
         else if (LevelNumberFloat < levels[6])
         {
@@ -84,7 +131,7 @@ public class Bioma : ScriptableObject
             walkable = true;
             constructable = true;
             haveEffect = false;
-            return tilesPrefab[6];
+            return _tileColor[6];
         }
         else if (LevelNumberFloat < levels[7])
         {
@@ -92,7 +139,7 @@ public class Bioma : ScriptableObject
             walkable = true;
             constructable = true;
             haveEffect = false;
-            return tilesPrefab[7];
+            return _tileColor[7];
         }
         else if (LevelNumberFloat < levels[8])
         {
@@ -100,7 +147,7 @@ public class Bioma : ScriptableObject
             walkable = false;
             constructable = false;
             haveEffect = false;
-            return tilesPrefab[8];
+            return _tileColor[8];
         }
         else if (LevelNumberFloat <= levels[9])
         {
@@ -108,7 +155,7 @@ public class Bioma : ScriptableObject
             walkable = false;
             constructable = false;
             haveEffect = false;
-            return tilesPrefab[9];
+            return _tileColor[9];
         }
         else 
         { 
@@ -116,7 +163,7 @@ public class Bioma : ScriptableObject
             walkable = false;
             constructable = false;
             haveEffect = false;
-            return tilesPrefab[8]; 
+            return _tileColor[8]; 
         }
     }
 }
