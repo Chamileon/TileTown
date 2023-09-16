@@ -166,4 +166,16 @@ public class MapGenerator : MonoBehaviour
         Mode = MapGeneratorMode.None;
 
     }
+    public void RestartGame() 
+    {
+        InvokeMe(MapGeneratorMode.Restart);
+    }
+    public void SaveGame() 
+    {
+        InvokeMe(MapGeneratorMode.SaveEverything);
+    }
+    public void LoadGame()
+    {
+        InvokeMe(MapGeneratorMode.ResetAndLoad);
+    }
 }

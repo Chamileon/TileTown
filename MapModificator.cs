@@ -44,6 +44,10 @@ public static class MapModificator
 
 
     }
+    public static void ChangePropertiesOfATile() 
+    {
+        
+    }
     public static void ConstructTile()
     {
 
