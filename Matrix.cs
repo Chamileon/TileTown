@@ -8,74 +8,77 @@ using UnityEngine;
 public class Matrix : MonoBehaviour {
 
     public static Matrix matrix;
-    [SerializeField] private MapProperties mapProperties;
-    private Chunk[,] chunks;
-    public static Tile[,] tiles;
-    public MapProperties MapProperties { get => mapProperties; private set { mapProperties = value; } }
-    
+    public static Chunk[,] Chunks;
+    public static Tile[,] Tiles;
+    [SerializeField] private MapProperties _mapProperties;
+    public MapProperties MapProperties { get => _mapProperties; set { _mapProperties = value; } }
+    public  void SaveMap() 
+    {
+        _mapProperties.Seed = MapGenerator.mapGenerator.Seed;
+    }
     public void DeleteTiles()
     {
-        foreach (var tile in tiles) 
+        foreach (var tile in Tiles) 
         {
             if (tile.tileInstance != null) { Destroy(tile.tileInstance); }
-            else Debug.Log("NO se destruyó nada :(");
         }
     }
     public void LoadSeed() 
     {
-        MapGenerator.mapGenerator.seed = MapProperties.seed;
+        Debug.Log(MapProperties.Seed + " Loaded Seed");
+        SeedProperties properties = MapProperties.Seed.Clone();
+        MapGenerator.mapGenerator.Seed = properties;
     }
-    
     public  void SaveSeed() 
     {
-        Debug.Log(MapProperties.seed);
-        Debug.Log(MapGenerator.mapGenerator.seed);
-        MapProperties.seed = MapGenerator.mapGenerator.seed;
+        Debug.Log(MapProperties.Seed + " Saved Seed");
+        SeedProperties properties = MapGenerator.mapGenerator.Seed.Clone();
+        _mapProperties.Seed = properties;
     }
-    public Chunk GetChunkFromID(int X, int Y) { return chunks[X, Y]; }
-    public Tile GetTileFromID(int X, int Y,int x, int y) 
+    public Chunk GetChunkFromID(int X, int Y) { return Chunks[X, Y]; }
+    public Tile GetTileFromID(int indexXChunk, int indexYChunk,int indexTileX, int indexTileY)
     {
-        return GetChunkFromID(X, Y).GetTileByIndex(x, y);
+        return GetChunkFromID(indexXChunk, indexYChunk).GetTileByIndex(indexTileX, indexTileY);
     }
-   
-    public void InitializeMe() 
+    public Tile GetTileFromID(int indexXTile,int indexYTile) { return Tiles[indexXTile, indexYTile]; }
+    IEnumerator InitializeMe() 
     {
         matrix = this;
-        chunks = new Chunk[mapProperties.X, mapProperties.Y];
-        tiles = new Tile[mapProperties.ExtentionX,mapProperties.ExtentionY];
-        for (int i = 0; i < mapProperties.X; i++)
+        Chunks = new Chunk[_mapProperties.X, _mapProperties.Y];
+        Tiles = new Tile[_mapProperties.ExtentionX,_mapProperties.ExtentionY];
+        for (int i = 0; i < _mapProperties.X; i++)
         {
-            for (int j = 0; j < mapProperties.Y; j++)
+
+            for (int j = 0; j < _mapProperties.Y; j++)
             {
-                chunks[i, j] = new Chunk(i, j);
-                for (int k = 0; k < chunks[i,j].X; k++) 
+                Chunks[i, j] = new Chunk(i, j);
+                for (int k = 0; k < Chunks[i,j].X; k++) 
                 {
-                    for(int l = 0; l < chunks[i,j].Y; l++) 
+                    yield return null;
+
+                    for(int l = 0; l < Chunks[i,j].Y; l++) 
                     {
-                        tiles[(i * God.ChunkMagnitude) + k,(j * God.ChunkMagnitude) + l] = chunks[i,j].GetTileByIndex(k, l);
-                        Debug.Log(tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l].Properties.x + " X & " + 
-                            tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l].Properties.y + " Y ADDED TO TILES ");
+                        Tiles[(i * God.ChunkMagnitude) + k,(j * God.ChunkMagnitude) + l] = Chunks[i,j].GetTileByIndex(k, l);
+                        Tile t = Tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l];
+                        t.tileInstance = Instantiate(TileSet.tileset.TilePrefab, SetTilesInMap(t.Properties.x, t.Properties.y), Quaternion.identity);
+                        Debug.Log(Tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l].Properties.x + " X & " + 
+                            Tiles[(i * God.ChunkMagnitude) + k, (j * God.ChunkMagnitude) + l].Properties.y + " Y ADDED TO TILES ");
                     }
                 }
             }
         }
+        MapGenerator.mapGenerator.InitializeGame();
+        God.god.IsNextStepReady = true;
+        WindowsController.controller.OpenCloseWindows(false);
+
+    }
+    private Vector3 SetTilesInMap(int x, int y) 
+    {
+        Vector3 insertion = new Vector3(x + 0.5f, y + 0.5f, 0f);
+        return insertion;
     }
     private void Awake()
     {
-        InitializeMe();
- 
-        
-        /* 
-            +Delete the next example
-        */
-        foreach(Chunk Chunkie in chunks) 
-        {
-            Debug.Log("ID: " + Chunkie.GetID().x + ", " + Chunkie.GetID().y);
-            foreach (Tile tile in Chunkie.GetTilesFromChunk())
-            {
-                Debug.Log("x = " + tile.Properties.x + " , y = " + tile.Properties.y);
-            }
-        }
-        
+        StartCoroutine(InitializeMe());
     }
 }
