@@ -23,11 +23,16 @@ public static class MapModificator
             t.Properties.level--;
             return t.Properties.level;
         }
-        else 
+        else if (ud == UpOrDown.Change)
         {
             Tile t = SelectTile();
             t.Properties.level = changelvl;
             t.tileInstance.GetComponent<SpriteRenderer>().color = TileSet.tileset.GetBioma(biomaNumber).GetTileColorByLevel(changelvl);
+            return t.Properties.level;
+        }
+        else
+        {
+            Tile t = SelectTile();
             return t.Properties.level;
         }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MapModificatorController : MonoBehaviour
 {
@@ -21,6 +22,6 @@ public class MapModificatorController : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetMouseButtonUp(0)) { ModifyMap(); _modificatorMode = UpOrDown.None; actualtile = MapModificator.SelectTile(); }
+        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject()) { ModifyMap(); actualtile = MapModificator.SelectTile(); }
     }
 }

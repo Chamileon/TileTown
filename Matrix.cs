@@ -68,6 +68,9 @@ public class Matrix : MonoBehaviour {
             }
         }
         MapGenerator.mapGenerator.InitializeGame();
+        God.god.IsNextStepReady = true;
+        WindowsController.controller.OpenCloseWindows(false);
+
     }
     private Vector3 SetTilesInMap(int x, int y) 
     {
