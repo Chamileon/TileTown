@@ -12,15 +12,16 @@ public class CreatureTemplate : ScriptableObject
     public string description;
     public CreatureType type;
     public bool canBeRecluted, canBeEvolutioned;
-    [Space]
     public int levelToEvolution;
+    public CreatureElement[] elements;
     [Header("Creature Status")]
     public int basicHealth;
     public int basicMana;
     public int basicAttack;
     public int basicDefense;
-    public int basicAttackSpeed;
     public int basicMagicAttack;
     public int basicMagicDefense;
+    public int basicRange;
 }
 public enum CreatureType { D, C, B, A, Z, Legendary, Acient}
+public enum CreatureElement { Water , Plant, Fire, Air, Ground, Electric, Ice, Light, Dark, Posion}
