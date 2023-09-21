@@ -6,11 +6,11 @@ public class Zoo : MonoBehaviour
 {
     public static Zoo zoo;
 
-     
-
+    [SerializeField] private CreatureTemplate[] _creatures;
+    public CreatureTemplate Creature(int index) { return _creatures[index]; }
     private void InitializeMe()
     {
-        if (zoo == null) zoo = this; else Destroy(gameObject);
+        zoo = this;
     }
     private void Awake()
     {
