@@ -23,5 +23,5 @@ public class CreatureTemplate : ScriptableObject
     public int basicMagicDefense;
     public int basicRange;
 }
-public enum CreatureType { D, C, B, A, Z, Legendary, Acient}
+public enum CreatureType { D = 10, C = 20, B = 30, A = 40, Z = 50, Legendary = 60, Acient = 70}
 public enum CreatureElement { Water , Plant, Fire, Air, Ground, Electric, Ice, Light, Dark, Posion}

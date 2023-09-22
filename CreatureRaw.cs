@@ -15,7 +15,7 @@ public class CreatureRaw
     [SerializeField] private int _actualMDef;
     [SerializeField] private int _actualRange;
     [SerializeField] private CreatureStatus _status = CreatureStatus.None;
-
+    public CreatureTemplate CreatureTemplate { get { return _creatureTemplate; } set { _creatureTemplate = value; } }
     public CreatureRaw(CreatureTemplate creature, int lvl)
     {
         _creatureTemplate = creature;
