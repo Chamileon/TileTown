@@ -49,15 +49,6 @@ public static class MapModificator
 
 
     }
-    public static void ChangePropertiesOfATile() 
-    {
-        
-    }
-    public static void ConstructTile()
-    {
-
-    }
-
     public static Tile SelectTile() 
     {
         int x, y;

@@ -12,13 +12,18 @@ public class Tile
     public TileProperties Properties { get => properties; set => properties = value; }
     public GameObject tileInstance;
     
+    public GameObject onMe;
+    
 }
 
 [System.Serializable]
 public  class TileProperties
 {
-    public int x, y, level;
-    public bool walkable = false, constructable = false, haveEffect = false; 
+    public readonly int x, y;
+    public int level;
+    public bool walkable = false, constructable = false, haveEffect = false, occupied = false;
+    public int objectType;//0 - creature; 1 - npc; 2 - structure; 3 - warp;
+    public int objectID;// index to find in 0 - zoo; 1 - city; 2 - contructions; 4 - gameEvent
     public TileProperties(int X, int Y, bool Walkable, int Level,bool Contructable, bool HaveEffect) 
     {
         x = X;
@@ -27,5 +32,6 @@ public  class TileProperties
         constructable = Contructable;
         haveEffect = HaveEffect;
         level = Level;
-    }
+        
+}
 }

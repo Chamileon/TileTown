@@ -5,20 +5,20 @@ using UnityEngine;
 [System.Serializable]
 public class CreatureRaw
 {
-    [SerializeField] private CreatureTemplate _creatureTemplate;
-    [SerializeField] private int _actualLvl;
-    [SerializeField] private int _actualHealth;
-    [SerializeField] private int _actualMana;
-    [SerializeField] private int _actualAtk;
-    [SerializeField] private int _actualDef;
-    [SerializeField] private int _actualMAtk;
-    [SerializeField] private int _actualMDef;
-    [SerializeField] private int _actualRange;
+    [SerializeField] private CreatureTemplate creatureTemplate;
+    [SerializeField] private int actualLvl;
+    [SerializeField] private int actualHealth;
+    [SerializeField] private int actualMana;
+    [SerializeField] private int actualAtk;
+    [SerializeField] private int actualDef;
+    [SerializeField] private int actualMAtk;
+    [SerializeField] private int actualMDef;
+    [SerializeField] private int actualRange;
     [SerializeField] private CreatureStatus _status = CreatureStatus.None;
-
+    public CreatureTemplate CreatureTemplate { get { return creatureTemplate; } set { creatureTemplate = value; } }
     public CreatureRaw(CreatureTemplate creature, int lvl)
     {
-        _creatureTemplate = creature;
+        creatureTemplate = creature;
         SetLvl(lvl);
         
     }
@@ -30,18 +30,18 @@ public class CreatureRaw
     public void ResetStatus() { Status = CreatureStatus.None; }
     public void SetLvl(int lvl) 
     {
-        _actualLvl = lvl;
+        actualLvl = lvl;
         CalculateStatuses(lvl);
 
     }
     private void CalculateStatuses(int lvl) 
     {
-        _actualHealth = _creatureTemplate.basicHealth + CalculateHP(_creatureTemplate.elements[0], lvl);
-        _actualMana = _creatureTemplate.basicMana + CalculateMana(_creatureTemplate.elements[0], lvl);
-        _actualAtk = _creatureTemplate.basicAttack + CalculateATK(_creatureTemplate.elements[0], lvl);
-        _actualDef = _creatureTemplate.basicDefense + CalculateDEF(_creatureTemplate.elements[0], lvl);
-        _actualMAtk = _creatureTemplate.basicMagicAttack + CalculateMATK(_creatureTemplate.elements[0], lvl);
-        _actualMDef = _creatureTemplate.basicMagicDefense + CalculateMDEF(_creatureTemplate.elements[0], lvl);
+        actualHealth = creatureTemplate.basicHealth + CalculateHP(creatureTemplate.elements[0], lvl);
+        actualMana = creatureTemplate.basicMana + CalculateMana(creatureTemplate.elements[0], lvl);
+        actualAtk = creatureTemplate.basicAttack + CalculateATK(creatureTemplate.elements[0], lvl);
+        actualDef = creatureTemplate.basicDefense + CalculateDEF(creatureTemplate.elements[0], lvl);
+        actualMAtk = creatureTemplate.basicMagicAttack + CalculateMATK(creatureTemplate.elements[0], lvl);
+        actualMDef = creatureTemplate.basicMagicDefense + CalculateMDEF(creatureTemplate.elements[0], lvl);
         
     }
     private int CalculateHP(CreatureElement element, int lvl) 
@@ -66,7 +66,7 @@ public class CreatureRaw
                 return lvl * 3;
             case CreatureElement.Dark:
                 return lvl * 0;
-            case CreatureElement.Posion:
+            case CreatureElement.Poison:
                 return lvl * 0;
                 default: return 0;
         }
@@ -93,7 +93,7 @@ public class CreatureRaw
                 return lvl * 2;
             case CreatureElement.Dark:
                 return lvl * 1;
-            case CreatureElement.Posion:
+            case CreatureElement.Poison:
                 return lvl * 0;
             default: return 0;
         }
@@ -120,7 +120,7 @@ public class CreatureRaw
                 return lvl * 0;
             case CreatureElement.Dark:
                 return lvl * 3;
-            case CreatureElement.Posion:
+            case CreatureElement.Poison:
                 return lvl * 1;
             default: return 0;
         }
@@ -147,7 +147,7 @@ public class CreatureRaw
                 return lvl * 0;
             case CreatureElement.Dark:
                 return lvl * 1;
-            case CreatureElement.Posion:
+            case CreatureElement.Poison:
                 return lvl * 0;
             default: return 0;
         }
@@ -174,7 +174,7 @@ public class CreatureRaw
                 return lvl * 1;
             case CreatureElement.Dark:
                 return lvl * 2;
-            case CreatureElement.Posion:
+            case CreatureElement.Poison:
                 return lvl * 3;
             default: return 0;
         }
@@ -201,21 +201,12 @@ public class CreatureRaw
                 return lvl * 2;
             case CreatureElement.Dark:
                 return lvl * 1;
-            case CreatureElement.Posion:
+            case CreatureElement.Poison:
                 return lvl * 2;
             default: return 0;
         }
     }
-    private void ActualiceData(int lvl, int hp, int mana, int atk, int def, int spd, int matk, int mdef) 
-    {
-        _actualLvl = lvl;
-        _actualHealth = hp;
-        _actualMana = mana;
-        _actualAtk = atk;
-        _actualDef = def;
-        _actualMAtk = matk;
-        _actualMDef = mdef;
-    }
+    
     
 }
 public enum CreatureStatus { None ,Shocked, stunned, Slept, WaitingOneTurn, WaitingTwoTurns, Poisoned, Slowed, Blinded,AtkBuffed, DefBuffed, SpeedBuffed, RangeBuffed, HealthBuffed, ManaBuffed };
