@@ -23,7 +23,7 @@
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
-<a href="https://linkedin.com/in/adonai segura joaquín" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="adonai segura joaquín" height="30" width="40" /></a>
+<a href=["(https://www.linkedin.com/in/adonai-segura-joaqu%C3%ADn-7b89491a3?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)" ]target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="adonai segura joaquín" height="30" width="40" /></a>
 <a href="https://instagram.com/sr_kmaleon" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="sr_kmaleon" height="30" width="40" /></a>
 </p>
 
