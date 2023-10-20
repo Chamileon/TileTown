@@ -63,6 +63,10 @@ public class MapGenerator : MonoBehaviour
         foreach (Tile tile in Matrix.Tiles)
         {
             tile.tileInstance.GetComponent<SpriteRenderer>().color = Color.black;
+            if (tile.Properties.occupied) 
+            {
+                Destroy(tile.onMe);
+            }
         }
     }
     private void SaveEverything(MapGeneratorMode mode)
@@ -106,11 +110,20 @@ public class MapGenerator : MonoBehaviour
             MapFile mapFile = new MapFile();
             for (int i = 0; i < x; i++)
             {
-                Debug.Log("Paso 01");
                 for (int j = 0; j < y; j++)
                 {
-                    TileProperties prop = Matrix.Tiles[i, j].Properties;
-                    mapFile.Add(i, j, prop.level, prop.walkable, prop.constructable, prop.haveEffect);
+                    Tile t = Matrix.Tiles[i, j];
+                    TileProperties prop = t.Properties;
+                    Debug.Log(prop);
+                    if (prop.occupied) 
+                    {
+                        mapFile.Add(i, j, prop.level, prop.walkable, prop.constructable, prop.haveEffect,prop.occupied, prop.objectType, prop.objectID);
+                    }
+                    else
+                    {
+                        mapFile.Add(i, j, prop.level, prop.walkable, prop.constructable, prop.haveEffect);
+                    }
+                    
                 }
             }
             string dataPath = Application.persistentDataPath + mapSavesPath[selectMapPath];
@@ -156,6 +169,15 @@ public class MapGenerator : MonoBehaviour
                     prop.walkable = mapFile.walkable[i, j];
                     prop.constructable = mapFile.constructable[i, j];
                     prop.haveEffect = mapFile.haveEffect[i, j];
+                    prop.occupied = mapFile.occuppied[i, j];
+                    prop.objectType = mapFile.objectType[i, j];
+                    prop.objectID = mapFile.objectID[i, j];
+                    if (prop.occupied) 
+                    {
+                        CreatureSpawner.spawner.INDEX = mapFile.objectID[i, j];
+                        t.onMe = CreatureSpawner.spawner.SpawnACreatureInATile(mapFile.objectType[i, j], prop.level, i, j);
+                    }
+
                 }
             }
         }

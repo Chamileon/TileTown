@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(God))]
+[RequireComponent(typeof(Matrix))]
 public class Zoo : MonoBehaviour
 {
     public static Zoo zoo;
